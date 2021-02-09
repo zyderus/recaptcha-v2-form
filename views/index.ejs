@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  
+  <h1>Hello <%= name %></h1>
+  <h3>Google Recaptcha Tutorial</h3>
+
+  <form id="theForm" action="/captcha" method="post">
+    <p><input type="text" id="username" class="form-control" name="name" style="width: 295px"></p>
+
+    <!-- insert siteKey. data-theme is optinal (light, dark) -->
+    <p><div class="g-recaptcha" data-sitekey="6LcM8tYZAAAAABvmpocwIUdhXPESv96MNbmKBddC" 
+      data-theme="dark">
+    </div></p>
+
+    <button type="submit">Send</button>
+  </form>
+
+<!-- Optional front-end Form Submition Processing -->
+<script>
+
+document.querySelector('#theForm').addEventListener('submit', e => {
+    e.preventDefault();
+    
+    const captcha = document.querySelector('#g-recaptcha-response').value;
+    const username = document.querySelector('#username').value;
+
+    console.log('captcha: \n', captcha);
+    console.log('firstname: \n', username);
+
+    // Send the Form Data
+    return fetch('/captcha', {
+      method: "POST",
+      headers: { 'Content-type':'application/json' },
+      body: JSON.stringify({ username, captcha })
+    })
+    .then(res => res.json())
+    .then(data => {
+      // View response from server, which in turn is from google verification api
+      console.log(data);
+      // if(data.success) return location.reload();
+    });
+  });
+</script>
+</body>
+</html>
